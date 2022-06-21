@@ -56,9 +56,23 @@ class BezierCurve:
         return value
 
     def evaluate_derivative_at_time(self, t, derivative_order):
-        result = de_casteljaus_derivative_evaluation(t, self._start_time, self._scale_factor, self._control_points,derivative_order)
-        result = matrix_derivative_evaluation(t, self._start_time, self._scale_factor, self._control_points, derivative_order)
+        result = 0
+        if self._order >= 6:
+            result = de_casteljaus_derivative_evaluation(t, self._start_time, self._scale_factor, self._control_points,derivative_order)
+        else:
+            result = matrix_derivative_evaluation(t, self._start_time, self._scale_factor, self._control_points, derivative_order)
         return result
+
+    def evaluate_curvature_at_time(self, time):
+        dimension = get_dimension(self._control_points)
+        if dimension == 1:
+            derivative_vector = np.array([1 , self.evaluate_derivative_at_time(time,1)[0]])
+            derivative_2nd_vector = np.array([0 , self.evaluate_derivative_at_time(time,2)[0]])
+        else:
+            derivative_vector = self.evaluate_derivative_at_time(time,1)
+            derivative_2nd_vector = self.evaluate_derivative_at_time(time,2)
+        curvature = np.linalg.norm(np.cross(derivative_vector.flatten(), derivative_2nd_vector.flatten())) / np.linalg.norm(derivative_vector)**3
+        return curvature
 
     def get_derivative_data(self,number_of_data_points,derivative_order):
         time_data = np.linspace(self._start_time, self._end_time, number_of_data_points)
@@ -73,6 +87,14 @@ class BezierCurve:
             else:
                 derivative_data[:,i][:,None] = self.evaluate_derivative_at_time(t,derivative_order)
         return derivative_data, time_data
+
+    def get_curvature_data(self, number_of_data_points):
+        time_data = np.linspace(self._start_time, self._end_time, number_of_data_points)
+        curvature_data = np.zeros(number_of_data_points)
+        for i in range(number_of_data_points):
+            t = time_data[i]
+            curvature_data[i] = self.evaluate_curvature_at_time(t)
+        return curvature_data, time_data
 
     def plot_curve_data(self, number_of_data_points):
         curve_data, time_data = self.get_curve_data(number_of_data_points)
@@ -127,3 +149,11 @@ class BezierCurve:
         plt.title(figure_title)
         plt.show()
 
+    def plot_curvature(self, number_of_data_points):
+        curvature_data, time_data = self.get_curvature_data(number_of_data_points)
+        plt.figure("Curvature")
+        plt.plot(time_data, curvature_data)
+        plt.xlabel('time')
+        plt.ylabel('curvature')
+        plt.title("Curvature")
+        plt.show()
