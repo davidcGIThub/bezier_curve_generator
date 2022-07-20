@@ -29,7 +29,7 @@ class BezierCurve:
         self._order = get_order(control_points)
         self._dimension = get_dimension(control_points)
 
-    def get_curve_data(self,number_of_data_points):
+    def get_curve_data(self, number_of_data_points):
         '''
         Returns equally distributed data points for the curve, as well
         as time data for the parameterization
