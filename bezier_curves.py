@@ -6,7 +6,7 @@ higher than the 5th degree.
 
 import numpy as np 
 import matplotlib.pyplot as plt
-from helper_functions import get_dimension, get_order
+from helper_functions import get_dimension, get_order, get_num_control_points
 from matrix_method import matrix_method_evaluation, matrix_derivative_evaluation
 from de_casteljaus_method import de_casteljaus_method_evaluation, de_casteljaus_derivative_evaluation
 
@@ -63,6 +63,12 @@ class BezierCurve:
             result = matrix_derivative_evaluation(t, self._start_time, self._scale_factor, self._control_points, derivative_order)
         return result
 
+    def evaluate_derivative_magnitude_at_time(self, t, derivative_order):
+        result = 0
+        derivatives = self.evaluate_derivative_at_time(t,derivative_order)
+        result = np.linalg.norm(derivatives)
+        return result
+
     def evaluate_curvature_at_time(self, time):
         dimension = get_dimension(self._control_points)
         if dimension == 1:
@@ -87,6 +93,14 @@ class BezierCurve:
             else:
                 derivative_data[:,i][:,None] = self.evaluate_derivative_at_time(t,derivative_order)
         return derivative_data, time_data
+    
+    def get_derivative_magnitude_data(self,number_of_data_points,derivative_order):
+        time_data = np.linspace(self._start_time, self._end_time, number_of_data_points)
+        derivative_magnitude_data = np.zeros(number_of_data_points)
+        for i in range(number_of_data_points):
+            t = time_data[i]
+            derivative_magnitude_data[i] = self.evaluate_derivative_magnitude_at_time(t,derivative_order)
+        return derivative_magnitude_data, time_data
 
     def get_curvature_data(self, number_of_data_points):
         time_data = np.linspace(self._start_time, self._end_time, number_of_data_points)
@@ -112,9 +126,9 @@ class BezierCurve:
         elif self._dimension == 2:
             plt.figure()
             plt.plot(curve_data[0,:],curve_data[1,:],label="Bezier Curve")
-            plt.scatter([curve_data[0,0],curve_data[0,-1]],[curve_data[1,0],curve_data[1,-1]],label="Control Points")
-            plt.scatter(self._control_points[0,:],self._control_points[1,:],label="Control Points")
-            plt.plot(self._control_points[0,:],self._control_points[1,:])
+            # plt.scatter([curve_data[0,0],curve_data[0,-1]],[curve_data[1,0],curve_data[1,-1]],label="Control Points",color='y')
+            plt.scatter(self._control_points[0,:],self._control_points[1,:],label="Control Points",color='y')
+            plt.plot(self._control_points[0,:],self._control_points[1,:],color='y')
             plt.xlabel("x")
             plt.ylabel("y")
             plt.legend()
@@ -147,6 +161,15 @@ class BezierCurve:
         plt.ylabel("derivative")
         plt.legend()
         plt.title(figure_title)
+        plt.show()
+
+    def plot_derivative_magnitude_data(self, number_of_data_points, derivative_order):
+        derivative_magnitude_data, time_data = self.get_derivative_magnitude_data(number_of_data_points,derivative_order)
+        plt.figure("Derivative Magnitude")
+        plt.plot(time_data, derivative_magnitude_data)
+        plt.xlabel('time')
+        plt.ylabel('derivative magnitude')
+        plt.title("Derivative Magnitude")
         plt.show()
 
     def plot_curvature(self, number_of_data_points):

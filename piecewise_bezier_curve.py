@@ -38,6 +38,28 @@ class PiecewiseBezierCurve:
                 curve_data[:,i][:,None] = self.evaluate_curve_at_time(t)
         return curve_data, time_data
 
+    def get_derivative_data(self,number_of_data_points,derivative_order):
+        time_data = np.linspace(self._start_time, self._end_time, number_of_data_points)
+        if self._dimension == 1:
+            derivative_data = np.zeros(number_of_data_points)
+        else:
+            derivative_data = np.zeros((self._dimension,number_of_data_points))
+        for i in range(number_of_data_points):
+            t = time_data[i]
+            if self._dimension == 1:
+                derivative_data[i] = self.evaluate_derivative_at_time(t,derivative_order)
+            else:
+                derivative_data[:,i][:,None] = self.evaluate_derivative_at_time(t,derivative_order)
+        return derivative_data, time_data
+
+    def get_curvature_data(self,number_of_data_points):
+        time_data = np.linspace(self._start_time, self._end_time, number_of_data_points)
+        curvature_data = np.zeros(number_of_data_points)
+        for i in range(number_of_data_points):
+            t = time_data[i]
+            curvature_data[i] = self.evaluate_curvature_at_time(t)
+        return curvature_data, time_data
+
     def get_num_control_points(self, control_points):
         if control_points.ndim == 1:
             num_control_points = len(control_points)
@@ -71,10 +93,21 @@ class PiecewiseBezierCurve:
         curve_number = int((t - self._start_time)/self._scale_factor)
         if t == self._end_time:
             curve_number -= 1 
-        print("curve_number: " , curve_number)
-        print("shape : " , len(self._curve_list))
-        print("time: " , t)
         result = self._curve_list[curve_number].evaluate_curve_at_time(t)
+        return result
+
+    def evaluate_derivative_at_time(self,t,derivative_order):
+        curve_number = int((t - self._start_time)/self._scale_factor)
+        if t == self._end_time:
+            curve_number -= 1 
+        result = self._curve_list[curve_number].evaluate_derivative_at_time(t,derivative_order)
+        return result
+
+    def evaluate_curvature_at_time(self,t):
+        curve_number = int((t - self._start_time)/self._scale_factor)
+        if t == self._end_time:
+            curve_number -= 1 
+        result = self._curve_list[curve_number].evaluate_curvature_at_time(t)
         return result
 
     def plot_curve_data(self, number_of_data_points):
@@ -115,26 +148,26 @@ class PiecewiseBezierCurve:
             plt.legend()
             plt.show()
 
-#     def plot_derivative_data(self, number_of_data_points, derivative_order):
-#         figure_title = str(derivative_order) + " Order Derivative"
-#         plt.figure()
-#         derivative_data, time_data = self.get_derivative_data(number_of_data_points,derivative_order)
-#         for i in range(self._dimension):
-#             if self._dimension == 1:
-#                 plt.plot(time_data,derivative_data[:], label="dimesion " + str(i))
-#             else:
-#                 plt.plot(time_data,derivative_data[i,:], label="dimesion " + str(i))
-#         plt.xlabel("time")
-#         plt.ylabel("derivative")
-#         plt.legend()
-#         plt.title(figure_title)
-#         plt.show()
+    def plot_derivative_data(self, number_of_data_points, derivative_order):
+        figure_title = str(derivative_order) + " Order Derivative"
+        plt.figure()
+        derivative_data, time_data = self.get_derivative_data(number_of_data_points,derivative_order)
+        for i in range(self._dimension):
+            if self._dimension == 1:
+                plt.plot(time_data,derivative_data[:], label="dimesion " + str(i))
+            else:
+                plt.plot(time_data,derivative_data[i,:], label="dimesion " + str(i))
+        plt.xlabel("time")
+        plt.ylabel("derivative")
+        plt.legend()
+        plt.title(figure_title)
+        plt.show()
 
-#     def plot_curvature(self, number_of_data_points):
-#         curvature_data, time_data = self.get_curvature_data(number_of_data_points)
-#         plt.figure("Curvature")
-#         plt.plot(time_data, curvature_data)
-#         plt.xlabel('time')
-#         plt.ylabel('curvature')
-#         plt.title("Curvature")
-#         plt.show()
+    def plot_curvature(self, number_of_data_points):
+        curvature_data, time_data = self.get_curvature_data(number_of_data_points)
+        plt.figure("Curvature")
+        plt.plot(time_data, curvature_data)
+        plt.xlabel('time')
+        plt.ylabel('curvature')
+        plt.title("Curvature")
+        plt.show()
