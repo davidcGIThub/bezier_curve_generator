@@ -1,7 +1,7 @@
 from time import time
 import numpy as np
 import matplotlib.pyplot as plt
-from bezier_curves import BezierCurve
+from bezier_curve_generator.bezier_curves import BezierCurve
 import time
 import random
 

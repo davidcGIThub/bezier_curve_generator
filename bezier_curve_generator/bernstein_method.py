@@ -1,5 +1,5 @@
 import numpy as np
-from helper_functions import get_order
+from bezier_curve_generator.helper_functions import get_order
 
 def bernstein_method_evaluation(t, control_points):
     summation = 0

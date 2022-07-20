@@ -1,5 +1,5 @@
 import numpy as np
-from helper_functions import get_dimension, get_order
+from bezier_curve_generator.helper_functions import get_dimension, get_order
 
 def de_casteljaus_method_evaluation(t,t0,alpha,control_points):
     t_t0 = t-t0

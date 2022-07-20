@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from piecewise_bezier_curve import PiecewiseBezierCurve
+from bezier_curve_generator.piecewise_bezier_curve import PiecewiseBezierCurve
 
 control_points = np.array([[1, 3, 4, 2, 5,9,7],[1,2,3,6,6.5,7,6]]) #2d
 

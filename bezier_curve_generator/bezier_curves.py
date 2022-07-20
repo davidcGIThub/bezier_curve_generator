@@ -6,9 +6,9 @@ higher than the 5th degree.
 
 import numpy as np 
 import matplotlib.pyplot as plt
-from helper_functions import get_dimension, get_order, get_num_control_points
-from matrix_method import matrix_method_evaluation, matrix_derivative_evaluation
-from de_casteljaus_method import de_casteljaus_method_evaluation, de_casteljaus_derivative_evaluation
+from bezier_curve_generator.helper_functions import get_dimension, get_order, get_num_control_points
+from bezier_curve_generator.matrix_method import matrix_method_evaluation, matrix_derivative_evaluation
+from bezier_curve_generator.de_casteljaus_method import de_casteljaus_method_evaluation, de_casteljaus_derivative_evaluation
 
 class BezierCurve:
     """

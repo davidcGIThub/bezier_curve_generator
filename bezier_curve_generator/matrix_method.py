@@ -1,5 +1,5 @@
 import numpy as np
-from helper_functions import get_dimension, get_order
+from bezier_curve_generator.helper_functions import get_dimension, get_order
 
 def matrix_method_evaluation(t,t0,alpha,control_points):
     order = get_order(control_points)

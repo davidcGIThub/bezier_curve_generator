@@ -1,8 +1,7 @@
-from logging import raiseExceptions
 import numpy as np 
 import matplotlib.pyplot as plt
-from bezier_curves import BezierCurve
-from helper_functions import get_dimension
+from bezier_curve_generator.bezier_curves import BezierCurve
+from bezier_curve_generator.helper_functions import get_dimension
 
 
 class PiecewiseBezierCurve:
